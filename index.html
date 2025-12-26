@@ -296,12 +296,14 @@ form.addEventListener("submit", async (e) => {
     const text = await res.text();
     try { data = JSON.parse(text); } catch (_) {}
 
-    if (!data.ok) {
-      return showErr((data && (data.error || data.message)) ? (data.error || data.message) : "Submission failed.");
-    }
+    if (text && text.includes('"ok":true')) {
+	  form.reset();
+	  showOk("Submitted! Thank you — your training credit was recorded.");
+	  return;
+	}
+    showErr((data && (data.error || data.message)) ? (data.error || data.message) : "Submission failed.");
 
-    form.reset();
-    showOk("Submitted! Thank you — your training credit was recorded.");
+
   } catch (err) {
     showErr("Network error. Please check your connection and try again.");
   } finally {
