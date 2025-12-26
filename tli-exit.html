@@ -125,6 +125,22 @@
 
     input::placeholder{ color:rgba(255,255,255,.45); }
 
+    select{
+	  width:100%;
+	  background:transparent;
+	  border:none;
+	  border-bottom:1px solid var(--line);
+	  padding:12px 2px 10px;
+	  color:var(--text);
+	  font-size:16px;
+	  outline:none;
+	  appearance:none;
+	}
+
+	select option{
+	  color:#000; /* options list needs dark text to be readable */
+}
+
     .actions{
       display:flex;
       justify-content:flex-end;
@@ -247,9 +263,19 @@
         </div>
 
         <div class="field">
-          <label>Enter the officer role you trained for today <span class="req">*</span></label>
-          <input name="role" placeholder="Type here..." required />
-        </div>
+		  <label>Enter the officer role you trained for today <span class="req">*</span></label>
+		  <select name="role" required>
+		    <option value="" disabled selected>Select a role...</option>
+		    <option>President</option>
+		    <option>Vice President Education (VPE)</option>
+		    <option>Vice President Membership (VPM)</option>
+		    <option>Vice President Public Relations (VPPR)</option>
+		    <option>Secretary</option>
+		    <option>Treasurer</option>
+		    <option>Sergeant at Arms (SAA)</option>
+		  </select>
+		</div>
+
 
         <div class="field">
           <label>Enter your club's full name / not the club # <span class="req">*</span></label>
