@@ -162,6 +162,37 @@
     }
     .notice.ok{ background: var(--ok); border:1px solid var(--okBorder); }
     .notice.err{ background: var(--err); border:1px solid var(--errBorder); }
+
+    /* Thank-you screen */
+    #thankYouScreen{
+      display:none;
+      text-align:center;
+      padding:10px 8px 6px;
+    }
+    #thankYouScreen .ty-title{
+      font-size:28px;
+      font-weight:900;
+      line-height:1.25;
+      color:#fff;
+    }
+    #thankYouScreen .ty-body{
+      margin-top:16px;
+      font-size:20px;
+      font-weight:800;
+      line-height:1.35;
+      color:rgba(255,255,255,.92);
+    }
+    #thankYouScreen .ty-footer{
+      margin-top:18px;
+      font-size:20px;
+      font-weight:900;
+      line-height:1.35;
+      color:#fff;
+    }
+    #thankYouScreen .ty-email{
+      color:var(--gold);
+      word-break: break-word;
+    }
   </style>
 </head>
 
@@ -177,51 +208,73 @@
     <!-- Hidden iframe target to avoid CORS (no fetch) -->
     <iframe name="hidden_iframe" style="display:none;"></iframe>
 
-    <!-- IMPORTANT: This posts directly to Apps Script -->
-    <form id="exitTicketForm"
-          method="POST"
-          target="hidden_iframe"
-          action="https://script.google.com/macros/s/AKfycby2UJpqwY7X3nUfVCyKkThx_jRz9OZLdZnbDVsj19i45WyIYGd19UaMDTdRbAkOoMP6jg/exec"
-          autocomplete="on">
-
-      <!-- Hidden fields sent to Apps Script -->
-      <input type="hidden" name="eventDate" id="eventDateHidden">
-      <input type="hidden" name="source" value="tli-exit-web">
-
-      <div class="field">
-        <label>Enter your first and last name <span class="req">*</span></label>
-        <input name="fullName" placeholder="Type here..." required />
+    <!-- THANK YOU SCREEN -->
+    <div id="thankYouScreen">
+      <div class="ty-title">
+        Thank You! Your attendance for<br/>
+        Winter TLI is confirmed.
       </div>
 
-      <div class="field">
-        <label>Enter the officer role you trained for today <span class="req">*</span></label>
-        <input name="role" placeholder="Type here..." required />
+      <div class="ty-body">
+        Certificate of attendance will be<br/>
+        emailed to you between 48–72<br/>
+        hours. Thank you for attending<br/>
+        District 46 TLI! If you are not from<br/>
+        District 46, the certificate received in 48–72 hours, MUST be emailed to your District's PQD.
       </div>
 
-      <div class="field">
-        <label>Enter your club's full name / not the club # <span class="req">*</span></label>
-        <input name="clubName" placeholder="Type here..." required />
+      <div class="ty-footer">
+        Please CC D46 PQD Stella Umunna at<br/>
+        <span class="ty-email">sumunna@gmail.com</span>
       </div>
+    </div>
 
-      <div class="field">
-        <label>Enter your District Number <span class="req">*</span></label>
-        <input name="districtNumber" placeholder="Type here..." required />
-      </div>
+    <!-- FORM SCREEN (hidden after submit) -->
+    <div id="formScreen">
+      <form id="exitTicketForm"
+            method="POST"
+            target="hidden_iframe"
+            action="https://script.google.com/macros/s/AKfycby2UJpqwY7X3nUfVCyKkThx_jRz9OZLdZnbDVsj19i45WyIYGd19UaMDTdRbAkOoMP6jg/exec"
+            autocomplete="on">
 
-      <div class="field">
-        <label>Enter your email address <span class="req">*</span></label>
-        <input name="email" type="email" placeholder="Type here..." required />
-      </div>
+        <!-- Hidden fields sent to Apps Script -->
+        <input type="hidden" name="eventDate" id="eventDateHidden">
+        <input type="hidden" name="source" value="tli-exit-web">
 
-      <div class="actions">
-        <button id="submitBtn" type="submit">
-          Send <span aria-hidden="true"><i class="far fa-paper-plane ml-2"></i></span>
-        </button>
-      </div>
+        <div class="field">
+          <label>Enter your first and last name <span class="req">*</span></label>
+          <input name="fullName" placeholder="Type here..." required />
+        </div>
 
-      <div class="notice ok" id="okBox">Submitted! Thank you — your training credit was recorded.</div>
-      <div class="notice err" id="errBox"></div>
-    </form>
+        <div class="field">
+          <label>Enter the officer role you trained for today <span class="req">*</span></label>
+          <input name="role" placeholder="Type here..." required />
+        </div>
+
+        <div class="field">
+          <label>Enter your club's full name / not the club # <span class="req">*</span></label>
+          <input name="clubName" placeholder="Type here..." required />
+        </div>
+
+        <div class="field">
+          <label>Enter your District Number <span class="req">*</span></label>
+          <input name="districtNumber" placeholder="Type here..." required />
+        </div>
+
+        <div class="field">
+          <label>Enter your email address <span class="req">*</span></label>
+          <input name="email" type="email" placeholder="Type here..." required />
+        </div>
+
+        <div class="actions">
+          <button id="submitBtn" type="submit">
+            Send <span aria-hidden="true"><i class="far fa-paper-plane ml-2"></i></span>
+          </button>
+        </div>
+
+        <div class="notice err" id="errBox"></div>
+      </form>
+    </div>
   </div>
 
   <script>
@@ -242,21 +295,15 @@
     const eventDateHidden = document.getElementById("eventDateHidden");
     const submitBtn = document.getElementById("submitBtn");
     const errBox = document.getElementById("errBox");
-    const okBox = document.getElementById("okBox");
     const form = document.getElementById("exitTicketForm");
 
+    const thankYouScreen = document.getElementById("thankYouScreen");
+    const formScreen = document.getElementById("formScreen");
+
     function showErr(msg){
-      okBox.style.display = "none";
       errBox.textContent = msg;
       errBox.style.display = "block";
       setTimeout(() => errBox.style.display = "none", 12000);
-    }
-
-    function showOk(msg){
-      errBox.style.display = "none";
-      okBox.textContent = msg;
-      okBox.style.display = "block";
-      setTimeout(() => okBox.style.display = "none", 6000);
     }
 
     if (!rawEventDate || rawEventDate.trim() === "") {
@@ -269,7 +316,8 @@
       eventDateHidden.value = eventDate;
     }
 
-    // No fetch(). Let the browser submit the form to the hidden iframe (avoids CORS).
+    // No fetch(). Browser submits form to hidden iframe (avoids CORS).
+    // On submit, replace the form with the Thank You message.
     form.addEventListener("submit", (e) => {
       if (!eventDateHidden.value) {
         e.preventDefault();
@@ -277,11 +325,11 @@
         return;
       }
 
-      // Show success immediately after submit click
-      showOk("Submitted! Thank you — your training credit was recorded.");
+      // Let the POST happen, but swap UI immediately
+      formScreen.style.display = "none";
+      thankYouScreen.style.display = "block";
 
-      // Optional: clear after a beat
-      setTimeout(() => form.reset(), 200);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     });
   </script>
 </body>
