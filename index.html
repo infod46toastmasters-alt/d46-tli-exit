@@ -4,13 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>D46 TLI Exit Ticket</title>
+
   <!-- Load the font -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-
-
 
   <style>
     :root{
@@ -24,36 +23,36 @@
       --okBorder:rgba(46, 204, 113, .35);
       --err:rgba(231, 76, 60, .18);
       --errBorder:rgba(231, 76, 60, .35);
+
       --fuenteGlobal: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
       --tamano-texto: 2; /* 8px * 2 = 16px base */
     }
 
     *{ box-sizing:border-box; }
 
-    /* Use the attached background image */
-body{
-  margin:0;
-  font-family: var(--fuenteGlobal);
-  font-size: calc(8px * var(--tamano-texto));
-  color:#fff;
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:24px;
+    body{
+      margin:0;
+      font-family: var(--fuenteGlobal);
+      font-size: calc(8px * var(--tamano-texto));
+      color:#fff;
+      min-height:100vh;
+      display:flex;
+      justify-content:center;
+      align-items:center;
+      padding:24px;
 
-  /* 1) soft bokeh glow  2) blue overlay  3) background photo */
-  background:
-    radial-gradient(900px 520px at 25% 15%, rgba(255,255,255,.10), transparent 60%),
-    radial-gradient(700px 420px at 70% 30%, rgba(255,255,255,.08), transparent 60%),
-    linear-gradient(180deg, rgba(9, 79, 110, .82), rgba(5, 45, 66, .88)),
-    url("./TLI_EXIT_TICKET_BACKGROUND.jpg");
+      /* 1) soft bokeh glow  2) blue overlay  3) background photo */
+      background:
+        radial-gradient(900px 520px at 25% 15%, rgba(255,255,255,.10), transparent 60%),
+        radial-gradient(700px 420px at 70% 30%, rgba(255,255,255,.08), transparent 60%),
+        linear-gradient(180deg, rgba(9, 79, 110, .82), rgba(5, 45, 66, .88)),
+        url("./TLI_EXIT_TICKET_BACKGROUND.jpg");
 
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
-}
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+    }
 
     .card{
       width:min(620px, 100%);
@@ -73,6 +72,8 @@ body{
       font-size:14px;
       margin:4px 0 18px;
       text-transform:uppercase;
+      line-height:1.2;
+      font-style: italic;
     }
 
     .titleWrap{
@@ -86,8 +87,9 @@ body{
     .title{
       margin:0;
       font-size:38px;
-      line-height:1.08;
+      line-height:1.2;
       font-weight:900;
+      color:#fff;
     }
 
     .date{
@@ -103,7 +105,7 @@ body{
 
     label{
       display:block;
-      font-size:18px;
+      font-size:17px;
       font-weight:800;
       margin-bottom:10px;
     }
@@ -160,69 +162,69 @@ body{
     }
     .notice.ok{ background: var(--ok); border:1px solid var(--okBorder); }
     .notice.err{ background: var(--err); border:1px solid var(--errBorder); }
-
-    .small{
-      margin-top:10px;
-      color:rgba(255,255,255,.75);
-      font-size:13px;
-      text-align:center;
-    }
-    .small code{
-      background: rgba(255,255,255,.10);
-      padding:2px 6px;
-      border-radius:8px;
-    }
   </style>
 </head>
 
 <body>
   <div class="card">
-    <div class="hint" style="color:#F2DF74; font-size:px; font-weight:italic; font-style:; line-height: 1.2; --tamano-texto:2.5; text-transform:; letter-spacing:px" >Kindly enter your information below and click send for club officer training credit</div>
+    <div class="hint">Kindly enter your information below and click send for club officer training credit</div>
 
     <div class="titleWrap">
-      <h1 class="title" style="color:#FFFFFF; font-size:px; font-weight:bold; font-style:; line-height: 1.2; --tamano-texto:4.3; text-transform:; letter-spacing:px">D46 TLI Exit Ticket</h1>
+      <h1 class="title">D46 TLI Exit Ticket</h1>
       <p class="date" id="eventDateText">—</p>
     </div>
 
-    <form id="exitTicketForm" autocomplete="on">
+    <!-- Hidden iframe target to avoid CORS (no fetch) -->
+    <iframe name="hidden_iframe" style="display:none;"></iframe>
+
+    <!-- IMPORTANT: This posts directly to Apps Script -->
+    <form id="exitTicketForm"
+          method="POST"
+          target="hidden_iframe"
+          action="https://script.google.com/macros/s/AKfycby2UJpqwY7X3nUfVCyKkThx_jRz9OZLdZnbDVsj19i45WyIYGd19UaMDTdRbAkOoMP6jg/exec"
+          autocomplete="on">
+
+      <!-- Hidden fields sent to Apps Script -->
+      <input type="hidden" name="eventDate" id="eventDateHidden">
+      <input type="hidden" name="source" value="tli-exit-web">
+
       <div class="field">
-        <label style="font-size: 17px;">Enter your first and last name <span class="req">*</span></label>
+        <label>Enter your first and last name <span class="req">*</span></label>
         <input name="fullName" placeholder="Type here..." required />
       </div>
 
       <div class="field">
-        <label style="font-size: 17px;">Enter the officer role you trained for today <span class="req">*</span></label>
+        <label>Enter the officer role you trained for today <span class="req">*</span></label>
         <input name="role" placeholder="Type here..." required />
       </div>
 
       <div class="field">
-        <label style="font-size: 17px;">Enter your club's full name / not the club # <span class="req">*</span></label>
+        <label>Enter your club's full name / not the club # <span class="req">*</span></label>
         <input name="clubName" placeholder="Type here..." required />
       </div>
 
       <div class="field">
-        <label style="font-size: 17px;">Enter your District Number <span class="req">*</span></label>
+        <label>Enter your District Number <span class="req">*</span></label>
         <input name="districtNumber" placeholder="Type here..." required />
       </div>
 
       <div class="field">
-        <label style="font-size: 17px;">Enter your email address <span class="req">*</span></label>
+        <label>Enter your email address <span class="req">*</span></label>
         <input name="email" type="email" placeholder="Type here..." required />
       </div>
 
       <div class="actions">
-        <button id="submitBtn" type="submit">Send <span aria-hidden="true"><i class="far fa-paper-plane ml-2"></i></span></button>
+        <button id="submitBtn" type="submit">
+          Send <span aria-hidden="true"><i class="far fa-paper-plane ml-2"></i></span>
+        </button>
       </div>
 
       <div class="notice ok" id="okBox">Submitted! Thank you — your training credit was recorded.</div>
       <div class="notice err" id="errBox"></div>
-
-
     </form>
   </div>
 
   <script>
-    // REQUIRED PARAM: eventDate
     function formatNiceDate(input) {
       const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(input);
       if (iso) {
@@ -230,13 +232,14 @@ body{
         const dt = new Date(y, m - 1, d);
         return dt.toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' });
       }
-      return input; // allow "December 11, 2025" style strings
+      return input;
     }
 
     const params = new URLSearchParams(location.search);
-    const rawEventDate = params.get("eventDate"); // REQUIRED
+    const rawEventDate = params.get("eventDate");
 
     const eventDateTextEl = document.getElementById("eventDateText");
+    const eventDateHidden = document.getElementById("eventDateHidden");
     const submitBtn = document.getElementById("submitBtn");
     const errBox = document.getElementById("errBox");
     const okBox = document.getElementById("okBox");
@@ -260,56 +263,26 @@ body{
       eventDateTextEl.textContent = "Missing event date";
       submitBtn.disabled = true;
       showErr("This link is missing the required event date. Use ?eventDate=2025-12-11");
+    } else {
+      const eventDate = formatNiceDate(rawEventDate.trim());
+      eventDateTextEl.textContent = eventDate;
+      eventDateHidden.value = eventDate;
     }
 
-    const eventDate = rawEventDate ? formatNiceDate(rawEventDate.trim()) : "";
-    if (eventDate) eventDateTextEl.textContent = eventDate;
+    // No fetch(). Let the browser submit the form to the hidden iframe (avoids CORS).
+    form.addEventListener("submit", (e) => {
+      if (!eventDateHidden.value) {
+        e.preventDefault();
+        showErr("Missing event date. Please use the correct QR/link.");
+        return;
+      }
 
-    // Paste your Apps Script Web App URL here:
-    const API_URL = "https://script.google.com/macros/s/AKfycby2UJpqwY7X3nUfVCyKkThx_jRz9OZLdZnbDVsj19i45WyIYGd19UaMDTdRbAkOoMP6jg/exec";
+      // Show success immediately after submit click
+      showOk("Submitted! Thank you — your training credit was recorded.");
 
-form.addEventListener("submit", async (e) => {
-  e.preventDefault();
-  if (!eventDate) return showErr("Missing event date. Please use the correct QR/link.");
-
-  submitBtn.disabled = true;
-
-  try {
-    const params = new URLSearchParams();
-    params.append("eventDate", eventDate);
-    params.append("fullName", form.fullName.value.trim());
-    params.append("role", form.role.value.trim());
-    params.append("clubName", form.clubName.value.trim());
-    params.append("districtNumber", form.districtNumber.value.trim());
-    params.append("email", form.email.value.trim());
-    params.append("source", "tli-exit-web");
-
-    const res = await fetch(API_URL, {
-      method: "POST",
-      // IMPORTANT: do NOT set Content-Type header manually
-      body: params
+      // Optional: clear after a beat
+      setTimeout(() => form.reset(), 200);
     });
-
-    // Apps Script sometimes returns non-JSON depending on deployment;
-    // attempt JSON, fallback to text
-    let data = {};
-    const text = await res.text();
-    try { data = JSON.parse(text); } catch (_) {}
-
-    if (text && text.includes('"ok":true')) {
-	  form.reset();
-	  showOk("Submitted! Thank you — your training credit was recorded.");
-	  return;
-	}
-    showErr((data && (data.error || data.message)) ? (data.error || data.message) : "Submission failed.");
-
-
-  } catch (err) {
-    showErr("Network error. Please check your connection and try again.");
-  } finally {
-    submitBtn.disabled = false;
-  }
-});
   </script>
 </body>
 </html>
