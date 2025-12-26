@@ -4,6 +4,11 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>D46 TLI Exit Ticket</title>
+  <!-- Load the font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+
 
   <style>
     :root{
@@ -17,6 +22,8 @@
       --okBorder:rgba(46, 204, 113, .35);
       --err:rgba(231, 76, 60, .18);
       --errBorder:rgba(231, 76, 60, .35);
+      --fuenteGlobal: "Montserrat", system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+      --tamano-texto: 2; /* 8px * 2 = 16px base */
     }
 
     *{ box-sizing:border-box; }
@@ -24,7 +31,8 @@
     /* Use the attached background image */
 body{
   margin:0;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-family: var(--fuenteGlobal);
+  font-size: calc(8px * var(--tamano-texto));
   color:#fff;
   min-height:100vh;
   display:flex;
@@ -207,9 +215,7 @@ body{
       <div class="notice ok" id="okBox">Submitted! Thank you — your training credit was recorded.</div>
       <div class="notice err" id="errBox"></div>
 
-      <div class="small">
-        QR example: <code>?eventDate=2026-01-21</code>
-      </div>
+
     </form>
   </div>
 
