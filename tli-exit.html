@@ -268,42 +268,46 @@ body{
     // Paste your Apps Script Web App URL here:
     const API_URL = "https://script.google.com/macros/s/AKfycby2UJpqwY7X3nUfVCyKkThx_jRz9OZLdZnbDVsj19i45WyIYGd19UaMDTdRbAkOoMP6jg/exec";
 
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-      if (!eventDate) return showErr("Missing event date. Please use the correct QR/link.");
+form.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  if (!eventDate) return showErr("Missing event date. Please use the correct QR/link.");
 
-      submitBtn.disabled = true;
+  submitBtn.disabled = true;
 
-      const payload = {
-        eventDate,
-        fullName: form.fullName.value.trim(),
-        role: form.role.value.trim(),
-        clubName: form.clubName.value.trim(),
-        districtNumber: form.districtNumber.value.trim(),
-        email: form.email.value.trim(),
-        source: "tli-exit-web"
-      };
+  try {
+    const params = new URLSearchParams();
+    params.append("eventDate", eventDate);
+    params.append("fullName", form.fullName.value.trim());
+    params.append("role", form.role.value.trim());
+    params.append("clubName", form.clubName.value.trim());
+    params.append("districtNumber", form.districtNumber.value.trim());
+    params.append("email", form.email.value.trim());
+    params.append("source", "tli-exit-web");
 
-      try {
-        const res = await fetch(API_URL, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload)
-        });
-
-        const data = await res.json().catch(() => ({}));
-        if (!res.ok || !data.ok) {
-          return showErr((data && (data.error || data.message)) ? (data.error || data.message) : "Submission failed.");
-        }
-
-        form.reset();
-        showOk("Submitted! Thank you — your training credit was recorded.");
-      } catch (err) {
-        showErr("Network error. Please check your connection and try again.");
-      } finally {
-        submitBtn.disabled = false;
-      }
+    const res = await fetch(API_URL, {
+      method: "POST",
+      // IMPORTANT: do NOT set Content-Type header manually
+      body: params
     });
+
+    // Apps Script sometimes returns non-JSON depending on deployment;
+    // attempt JSON, fallback to text
+    let data = {};
+    const text = await res.text();
+    try { data = JSON.parse(text); } catch (_) {}
+
+    if (!data.ok) {
+      return showErr((data && (data.error || data.message)) ? (data.error || data.message) : "Submission failed.");
+    }
+
+    form.reset();
+    showOk("Submitted! Thank you — your training credit was recorded.");
+  } catch (err) {
+    showErr("Network error. Please check your connection and try again.");
+  } finally {
+    submitBtn.disabled = false;
+  }
+});
   </script>
 </body>
 </html>
