@@ -4,13 +4,12 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>D46 TLI Exit Ticket</title>
+
   <style>
     :root{
-      --bg1:#0b3a4d;
-      --bg2:#082c3a;
       --text:#ffffff;
-      --muted:rgba(255,255,255,.75);
-      --line:rgba(255,255,255,.25);
+      --muted:rgba(255,255,255,.78);
+      --line:rgba(255,255,255,.28);
       --btn:#1f8fb3;
       --btnHover:#197a99;
       --gold:#f5d44a;
@@ -19,7 +18,10 @@
       --err:rgba(231, 76, 60, .18);
       --errBorder:rgba(231, 76, 60, .35);
     }
-    *{box-sizing:border-box}
+
+    *{ box-sizing:border-box; }
+
+    /* Use the attached background image */
     body{
       margin:0;
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
@@ -29,20 +31,27 @@
       justify-content:center;
       align-items:center;
       padding:24px;
+
+      /* Background image + dark overlay */
       background:
-        radial-gradient(900px 500px at 30% 20%, rgba(255,255,255,.08), transparent 60%),
-        radial-gradient(700px 400px at 70% 40%, rgba(255,255,255,.06), transparent 60%),
-        linear-gradient(180deg, var(--bg1), var(--bg2));
+        linear-gradient(180deg, rgba(5, 25, 35, .82), rgba(5, 25, 35, .82)),
+        url("./TLI_EXIT_TICKET_BACKGROUND.jpg");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed; /* nice on desktop */
     }
+
     .card{
       width:min(620px, 100%);
       border-radius:22px;
       padding:28px 22px 22px;
-      background: rgba(0,0,0,.18);
-      box-shadow: 0 14px 40px rgba(0,0,0,.35);
+      background: rgba(0,0,0,.22);
+      box-shadow: 0 14px 40px rgba(0,0,0,.45);
+      backdrop-filter: blur(2px);
       overflow:hidden;
-      position:relative;
     }
+
     .hint{
       text-align:center;
       color:var(--gold);
@@ -52,34 +61,42 @@
       margin:4px 0 18px;
       text-transform:uppercase;
     }
+
     .titleWrap{
       text-align:center;
-      background: rgba(255,255,255,.06);
+      background: rgba(255,255,255,.08);
       padding:18px 14px;
       border-radius:18px;
       margin:0 auto 18px;
     }
+
     .title{
       margin:0;
       font-size:38px;
       line-height:1.08;
       font-weight:900;
     }
+
     .date{
       margin:6px 0 0;
       font-size:22px;
       color:var(--muted);
       font-weight:800;
     }
-    form{margin-top:16px}
-    .field{margin:18px 0 22px}
+
+    form{ margin-top:16px; }
+
+    .field{ margin:18px 0 22px; }
+
     label{
       display:block;
       font-size:18px;
       font-weight:800;
       margin-bottom:10px;
     }
-    .req{color:var(--gold)}
+
+    .req{ color:var(--gold); }
+
     input{
       width:100%;
       background:transparent;
@@ -90,12 +107,15 @@
       font-size:16px;
       outline:none;
     }
-    input::placeholder{color:rgba(255,255,255,.45)}
+
+    input::placeholder{ color:rgba(255,255,255,.45); }
+
     .actions{
       display:flex;
       justify-content:flex-end;
       margin-top:18px;
     }
+
     button{
       border:none;
       background:var(--btn);
@@ -110,11 +130,14 @@
       gap:10px;
       box-shadow: 0 10px 20px rgba(0,0,0,.25);
     }
-    button:hover{background:var(--btnHover)}
+
+    button:hover{ background:var(--btnHover); }
+
     button:disabled{
-      opacity:.7;
+      opacity:.6;
       cursor:not-allowed;
     }
+
     .notice{
       display:none;
       margin-top:14px;
@@ -122,29 +145,30 @@
       border-radius:12px;
       font-weight:800;
     }
-    .notice.ok{
-      background: var(--ok);
-      border:1px solid var(--okBorder);
-    }
-    .notice.err{
-      background: var(--err);
-      border:1px solid var(--errBorder);
-    }
+    .notice.ok{ background: var(--ok); border:1px solid var(--okBorder); }
+    .notice.err{ background: var(--err); border:1px solid var(--errBorder); }
+
     .small{
       margin-top:10px;
-      color:rgba(255,255,255,.7);
+      color:rgba(255,255,255,.75);
       font-size:13px;
       text-align:center;
     }
+    .small code{
+      background: rgba(255,255,255,.10);
+      padding:2px 6px;
+      border-radius:8px;
+    }
   </style>
 </head>
+
 <body>
   <div class="card">
     <div class="hint">Kindly enter your information below and click send for club officer training credit</div>
 
     <div class="titleWrap">
       <h1 class="title">D46 TLI Exit Ticket</h1>
-      <p class="date" id="eventDateText">December 11, 2025</p>
+      <p class="date" id="eventDateText">—</p>
     </div>
 
     <form id="exitTicketForm" autocomplete="on">
@@ -178,13 +202,16 @@
       </div>
 
       <div class="notice ok" id="okBox">Submitted! Thank you — your training credit was recorded.</div>
-      <div class="notice err" id="errBox">Something went wrong. Please try again.</div>
-      <div class="small">Share via QR: add a date like <b>?date=2026-01-21</b></div>
+      <div class="notice err" id="errBox"></div>
+
+      <div class="small">
+        QR example: <code>?eventDate=2026-01-21</code>
+      </div>
     </form>
   </div>
 
   <script>
-    // 1) Dynamic date at top
+    // REQUIRED PARAM: eventDate
     function formatNiceDate(input) {
       const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(input);
       if (iso) {
@@ -192,38 +219,48 @@
         const dt = new Date(y, m - 1, d);
         return dt.toLocaleDateString(undefined, { year:'numeric', month:'long', day:'numeric' });
       }
-      return input; // allow custom strings
+      return input; // allow "December 11, 2025" style strings
     }
 
     const params = new URLSearchParams(location.search);
-    const dateParam = params.get("date");
-    const eventDate = dateParam ? formatNiceDate(dateParam) : "December 11, 2025";
-    document.getElementById("eventDateText").textContent = eventDate;
+    const rawEventDate = params.get("eventDate"); // REQUIRED
 
-    // 2) Paste your Apps Script Web App URL here:
-    const API_URL = "PASTE_YOUR_APPS_SCRIPT_WEB_APP_URL_HERE";
-
-    const form = document.getElementById("exitTicketForm");
+    const eventDateTextEl = document.getElementById("eventDateText");
     const submitBtn = document.getElementById("submitBtn");
-    const okBox = document.getElementById("okBox");
     const errBox = document.getElementById("errBox");
+    const okBox = document.getElementById("okBox");
+    const form = document.getElementById("exitTicketForm");
+
+    function showErr(msg){
+      okBox.style.display = "none";
+      errBox.textContent = msg;
+      errBox.style.display = "block";
+      setTimeout(() => errBox.style.display = "none", 12000);
+    }
 
     function showOk(msg){
       errBox.style.display = "none";
-      okBox.textContent = msg || okBox.textContent;
+      okBox.textContent = msg;
       okBox.style.display = "block";
       setTimeout(() => okBox.style.display = "none", 6000);
     }
 
-    function showErr(msg){
-      okBox.style.display = "none";
-      errBox.textContent = msg || "Something went wrong. Please try again.";
-      errBox.style.display = "block";
-      setTimeout(() => errBox.style.display = "none", 8000);
+    if (!rawEventDate || rawEventDate.trim() === "") {
+      eventDateTextEl.textContent = "Missing event date";
+      submitBtn.disabled = true;
+      showErr("This link is missing the required event date. Use ?eventDate=2025-12-11");
     }
+
+    const eventDate = rawEventDate ? formatNiceDate(rawEventDate.trim()) : "";
+    if (eventDate) eventDateTextEl.textContent = eventDate;
+
+    // Paste your Apps Script Web App URL here:
+    const API_URL = "https://script.google.com/macros/s/AKfycby2UJpqwY7X3nUfVCyKkThx_jRz9OZLdZnbDVsj19i45WyIYGd19UaMDTdRbAkOoMP6jg/exec";
 
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
+      if (!eventDate) return showErr("Missing event date. Please use the correct QR/link.");
+
       submitBtn.disabled = true;
 
       const payload = {
@@ -244,12 +281,8 @@
         });
 
         const data = await res.json().catch(() => ({}));
-
         if (!res.ok || !data.ok) {
-          const msg = (data && (data.error || data.message)) ? (data.error || data.message) : "Submission failed.";
-          showErr(msg);
-          submitBtn.disabled = false;
-          return;
+          return showErr((data && (data.error || data.message)) ? (data.error || data.message) : "Submission failed.");
         }
 
         form.reset();
